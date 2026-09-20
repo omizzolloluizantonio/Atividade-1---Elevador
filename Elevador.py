@@ -1,4 +1,6 @@
-#Desenvolva um sistema capaz de coletar, processar e apresentar informações obtidas a partir de uma pesquisa. A pesquisa tem como objetivo entender o perfil dos moradores de um prédio, para isso, será necessário coletar respostas para as seguintes perguntas: Qual elevador que utilizava com mais frequência; (Elevador A, Elevador B, Elevador C) Qual período em que utilizava o elevador: (M=Matutino, V=Vespertino, N=Noturno) Construa um algoritmo que faça a leitura, calcule e mostre: Qual o elevador mais utilizado; Qual o período mais utilizado de todos; Qual a diferença porcentual entre o mais usado dos horários e o menos usado; Qual a porcentagem de uso de cada elevador; Qual a porcentagem de uso de cada período. O programa deve ser capaz de receber as respostas de 100 moradores do prédio.
+# Desenvolva um sistema capaz de coletar, processar e apresentar informações
+# obtidas a partir de uma pesquisa sobre os moradores de um prédio.
+
 # Inicializando contadores para cada elevador e período
 elevador_A = 0
 elevador_B = 0
@@ -10,8 +12,9 @@ periodo_N = 0
 def coletar_respostas():
     global elevador_A, elevador_B, elevador_C, periodo_M, periodo_V, periodo_N
     
-    for i in range(100):
-        print(f"Morador {i + 1}:")
+    morador = 1
+    while True:
+        print(f"Morador {morador}:")
         
         # Coletando a resposta do elevador
         while True:
@@ -41,25 +44,37 @@ def coletar_respostas():
             else:
                 print("Resposta inválida. Por favor, escolha M, V ou N.")
 
+        while True:
+            continuar = input("Deseja cadastrar outro morador? (S/N): ").strip().upper()
+            if continuar in ['S', 'N']:
+                break
+            print("Resposta inválida. Digite S para continuar ou N para encerrar.")
+
+        if continuar == 'N':
+            break
+        morador += 1
+
 def calcular_resultados():
     total_elevadores = elevador_A + elevador_B + elevador_C
     total_periodos = periodo_M + periodo_V + periodo_N
+
+    if total_elevadores == 0:
+        print("Nenhuma resposta foi registrada.")
+        return
     
-    # Determinando o elevador mais utilizado
-    if elevador_A > elevador_B and elevador_A > elevador_C:
-        elevador_mais_utilizado = 'A'
-    elif elevador_B > elevador_A and elevador_B > elevador_C:
-        elevador_mais_utilizado = 'B'
-    else:
-        elevador_mais_utilizado = 'C'
-    
-    # Determinando o período mais utilizado
-    if periodo_M > periodo_V and periodo_M > periodo_N:
-        periodo_mais_utilizado = 'M'
-    elif periodo_V > periodo_M and periodo_V > periodo_N:
-        periodo_mais_utilizado = 'V'
-    else:
-        periodo_mais_utilizado = 'N'
+    # Determinando os itens mais utilizados, incluindo possíveis empates.
+    elevadores = {'A': elevador_A, 'B': elevador_B, 'C': elevador_C}
+    periodos = {'M': periodo_M, 'V': periodo_V, 'N': periodo_N}
+    maior_elevador = max(elevadores.values())
+    maior_periodo = max(periodos.values())
+    elevador_mais_utilizado = ', '.join(
+        elevador for elevador, quantidade in elevadores.items()
+        if quantidade == maior_elevador
+    )
+    periodo_mais_utilizado = ', '.join(
+        periodo for periodo, quantidade in periodos.items()
+        if quantidade == maior_periodo
+    )
     
     # Calculando a diferença porcentual entre o mais usado e o menos usado dos horários
     porcentagem_diferenca = 0
@@ -89,3 +104,7 @@ def calcular_resultados():
     print(f"Porcentagem de uso do Período Matutino: {porcentagem_periodo_M:.2f}%")
     print(f"Porcentagem de uso do Período Vespertino: {porcentagem_periodo_V:.2f}%")
     print(f"Porcentagem de uso do Período Noturno: {porcentagem_periodo_N:.2f}%")
+
+if __name__ == '__main__':
+    coletar_respostas()
+    calcular_resultados()
